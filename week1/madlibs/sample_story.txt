@@ -1,0 +1,1 @@
+Once upon a time, there was a {1:adjective} {2:noun} who loved to {verb}. One day, the {2:noun} met a {adjective} friend and they decided to {verb} together.
