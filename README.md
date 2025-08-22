@@ -39,10 +39,7 @@ If you haven't run the sync script before, it will automatically set up the upst
 The course is organized by week, with each week containing a directory for each session, and each session containing lecture notes and labs as needed:
 
 - `week1/` - Introduction and getting started
-  - `notes/` - Lecture notes and course content
-  - `labs/` - Lab materials and exercises
-  - `resources/` - Additional resources and references
-- `week2/` through `week15/` - Weekly course materials (structure ready, content to be added)
+- `weeks2-3/` - Functions, unit tests, data types, and prompting
 - `sync-updates.sh` - Script to sync with instructor updates (macOS/Linux)
 - `sync-updates.ps1` - Script to sync with instructor updates (Windows)
 

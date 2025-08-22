@@ -62,7 +62,8 @@ It is now possible to become a competent programmer without first becoming fluen
 
 - Lecture/lab mix every session.
 - Outside of class:
-    - Problem set most weeks
+    - Finish lab exercises
+    - Five problem sets 
     - Some readings or videos
     - Expect to spend 6-9 hours/week
 - Echo checks in class
@@ -73,11 +74,10 @@ It is now possible to become a competent programmer without first becoming fluen
 ---
 ## Grading
 
-- Problem sets-- 490 points (49%)
+- Problem sets-- 500 points (50%)
 - Class participation-- 200 points (20%)
-- Final project-- 310 points (31%)
-    - 15-minute oral interview during reading period
-
+- Final project-- 300 points (30%)
+    - includes 15-minute oral interview during reading period
 
 ---
 ## Improvisation
