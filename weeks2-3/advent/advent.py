@@ -1,55 +1,62 @@
+
 import json
+from typing import Dict, List, Any
 
 class Game:
-    def __init__(self, game_file):
+    def __init__(self, game_file: str) -> None:
         with open(game_file) as f:
-            data = json.load(f)
-        self.rooms = data["rooms"]
-        self.items = data["items"]
-        self.current_room = data["start_room"]
-        self.inventory = []
+            data: Dict[str, Any] = json.load(f)
+        self.rooms: Dict[str, Dict[str, Any]] = data["rooms"]
+        self.current_room: str = data["start_room"]
+        self.inventory: List[str] = []
         # Track item states (e.g., torch lit or not)
-        self.item_states = {}
+        self.item_states: Dict[str, Any] = {}
 
-    def describe_current_room(self):
+    def describe_current_room(self) -> str:
         room = self.rooms[self.current_room]
         desc = room["description"]
-        items = room.get("items", [])
+        item_names = room.get("item_names", [])
         exits = room.get("exits", {})
         output = desc
-        if items:
-            output += "\nYou see: " + ", ".join(items)
-        output += "\nExits: " + ", ".join(exits.keys())
+        if item_names:
+            output += "\nYou see:"
+            for item_name in item_names:
+                output += f"\n  - {item_name}"
+        else:
+            output += "\nYou see nothing of interest."
+        output += "\nExits:"
+        if exits:
+            for direction in exits.keys():
+                output += f" {direction}"
+        else:
+            output += " None"
         return output
 
-    def move(self, direction):
+    def move(self, direction: str) -> str:
         room = self.rooms[self.current_room]
         exits = room.get("exits", {})
-        if direction in exits:
-            self.current_room = exits[direction]
-        else:
-            self.current_room = direction  # nonsensical, but for error demonstration
+        self.current_room = exits[direction]
         return f"You move {direction}.\n" + self.describe_current_room()
 
-    def take(self, item):
+    def take(self, item_name: str) -> str:
         room = self.rooms[self.current_room]
-        self.inventory.append(item)
-        if item in room.get("items", []):
-            room["items"].remove(item)
-        return f"You take the {item}."
+        self.inventory.append(item_name)
+        if item_name in room.get("item_names", []):
+            room["item_names"].remove(item_name)
+        return f"You take the {item_name}."
 
-    def use(self, item):
+    def use(self, item_name: str) -> str:
         # Framework for item actions
-        if item == "torch":
+        if item_name == "torch":
             if self.item_states.get("torch_lit", False):
                 return "The torch is already lit."
             else:
                 self.item_states["torch_lit"] = True
                 return "You light the torch. The cave is now illuminated!\n" + self.describe_current_room()
         else:
-            return f"You can't use the {item} right now."
+            return f"You can't use the {item_name} right now."
 
-    def play(self):
+    def play(self) -> None:
         print("Welcome to ADVENT!")
         print(self.describe_current_room())
         while True:
@@ -71,5 +78,5 @@ class Game:
                 print("I don't understand that command.")
 
 if __name__ == "__main__":
-    game = Game("game.json")
+    game: Game = Game("game.json")
     game.play()

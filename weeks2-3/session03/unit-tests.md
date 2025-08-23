@@ -91,10 +91,10 @@ In the initial state, the player is in the cave, and it only has a north exit.
 Let's test that if the player tries to move east, they get a message saying they can't go that way.
 ```
 
-``` python
-def test_move_invalid_direction(self):
+```python
+def test_move_invalid_direction(self) -> None:
     # In the initial state, the player is in the cave, which only has a north exit.
-    result = self.game.move("east")
+    result: str = self.game.move("east")
     # The correct behavior would be to get a message saying you can't go that way and stay in the cave.
     self.assertIn("can't go that way", result.lower())
     self.assertEqual(self.game.current_room, "cave")

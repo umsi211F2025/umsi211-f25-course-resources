@@ -4,18 +4,12 @@
       "description": "A dark, damp cave. There is a faint light to the north.",
       "dark_description": "It's pitch black. You can't see anything. Maybe you need a light source.",
       "exits": {"north": "forest"},
-      "items": []
+      "item_names": []
     },
     "forest": {
       "description": "A sunlit forest clearing. You hear birds singing.",
       "exits": {"south": "cave"},
-      "items": ["torch"]
-    }
-  },
-  "items": {
-    "torch": {
-      "description": "A wooden torch. It might be useful in the dark.",
-      "type": "light"
+      "item_names": ["torch"]
     }
   },
   "start_room": "cave"

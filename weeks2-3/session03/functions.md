@@ -22,8 +22,9 @@ marp: true
 ## Functions in python
 
 - In Python, we define a function using the `def` keyword.
+
 ```python
-def longer_string(a, b):
+def longer_string(a: str, b: str) -> str:
     if len(a) > len(b):
         return a
     else:
