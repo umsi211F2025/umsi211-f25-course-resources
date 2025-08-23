@@ -1,9 +1,12 @@
+
 import re
+from typing import List, Tuple, Dict, Union, Match
+
 
 # Extract all placeholders in order of appearance
-def get_placeholders_in_order(story):
-    pattern = re.compile(r"(?:\[[^\]]*\])?\{(\d+):([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{(\d+)\}")
-    placeholders = []
+def get_placeholders_in_order(story: str) -> List[Union[Tuple[str, str, str], Tuple[str, str]]]:
+    pattern: re.Pattern[str] = re.compile(r"(?:\[[^\]]*\])?\{(\d+):([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{(\d+)\}")
+    placeholders: List[Union[Tuple[str, str, str], Tuple[str, str]]] = []
     for match in pattern.finditer(story):
         if match.group(1) and match.group(2):
             # [text]{n:label}
@@ -16,17 +19,18 @@ def get_placeholders_in_order(story):
             placeholders.append(('numbered_ref', match.group(4)))
     return placeholders
 
-def prompt_user(placeholders):
-    answers = {}
-    unnumbered_idx = 0
+
+def prompt_user(placeholders: List[Union[Tuple[str, str, str], Tuple[str, str]]]) -> Dict[str, str]:
+    answers: Dict[str, str] = {}
+    unnumbered_idx: int = 0
     for ph in placeholders:
-        if ph[0] == 'numbered':
+        if ph[0] == 'numbered' and len(ph) == 3:
             num, label = ph[1], ph[2]
             if num not in answers:
                 article = 'an' if label[0].lower() in 'aeiou' else 'a'
                 prompt = f"Enter {article} {label}: "
                 answers[num] = input(prompt)
-        elif ph[0] == 'unnumbered':
+        elif ph[0] == 'unnumbered' and len(ph) == 2:
             label = ph[1]
             article = 'an' if label[0].lower() in 'aeiou' else 'a'
             prompt = f"Enter {article} {label}: "
@@ -35,23 +39,25 @@ def prompt_user(placeholders):
     return answers
 
 
-def fill_story(story, answers):
+
+def fill_story(story: str, answers: Dict[str, str]) -> str:
     # Replace placeholders with user answers
-    def replacer(match):
+    unnumbered_idx: int = 0
+    def replacer(match: Match[str]) -> str:
+        nonlocal unnumbered_idx
         if match.group(1) and match.group(2):
             # [text]{n:label}
             return answers.get(match.group(1), match.group(0))
         elif match.group(3):
             # [text]{label}
-            key = f"unnumbered_{replacer.unnumbered_idx}"
-            replacer.unnumbered_idx += 1
+            key = f"unnumbered_{unnumbered_idx}"
+            unnumbered_idx += 1
             return answers.get(key, match.group(0))
         elif match.group(4):
             # [text]{n}
             return answers.get(match.group(4), match.group(0))
         return match.group(0)
-    replacer.unnumbered_idx = 0
-    pattern = re.compile(r"(?:\[[^\]]*\])?\{(\d+):([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{(\d+)\}")
+    pattern: re.Pattern[str] = re.compile(r"(?:\[[^\]]*\])?\{(\d+):([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{(\d+)\}")
     return pattern.sub(replacer, story)
 
 
