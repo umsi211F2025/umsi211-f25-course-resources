@@ -1,0 +1,88 @@
+
+import re
+from typing import List, Tuple, Dict, Union, Match
+
+
+# Extract all placeholders in order of appearance
+def get_placeholders_in_order(story: str) -> List[Union[Tuple[str, str, str], Tuple[str, str]]]:
+    """
+    Extract all placeholders in order of appearance from the story string.
+    Returns a list of tuples describing each placeholder.
+    """
+    pattern: re.Pattern[str] = re.compile(r"(?:\[[^\]]*\])?\{(\d+):([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{(\d+)\}")
+    placeholders: List[Union[Tuple[str, str, str], Tuple[str, str]]] = []
+    for match in pattern.finditer(story):
+        if match.group(1) and match.group(2):
+            # [text]{n:label}
+            placeholders.append(('numbered', match.group(1), match.group(2)))
+        elif match.group(3):
+            # [text]{label}
+            placeholders.append(('unnumbered', match.group(3)))
+        elif match.group(4):
+            # [text]{n}
+            placeholders.append(('numbered_ref', match.group(4)))
+    return placeholders
+
+
+def prompt_user(placeholders: List[Union[Tuple[str, str, str], Tuple[str, str]]]) -> Dict[str, str]:
+    """
+    Prompt the user for input for each placeholder and return a dictionary of answers.
+    """
+    answers: Dict[str, str] = {}
+    unnumbered_idx: int = 0
+    for ph in placeholders:
+        if ph[0] == 'numbered' and len(ph) == 3:
+            num, label = ph[1], ph[2]
+            if num not in answers:
+                article = 'an' if label[0].lower() in 'aeiou' else 'a'
+                prompt = f"Enter {article} {label}: "
+                answers[num] = input(prompt)
+        elif ph[0] == 'unnumbered' and len(ph) == 2:
+            label = ph[1]
+            article = 'an' if label[0].lower() in 'aeiou' else 'a'
+            prompt = f"Enter {article} {label}: "
+            answers[f"unnumbered_{unnumbered_idx}"] = input(prompt)
+            unnumbered_idx += 1
+    return answers
+
+
+
+def fill_story(story: str, answers: Dict[str, str]) -> str:
+    """
+    Replace placeholders in the story with the user's answers.
+    """
+    unnumbered_idx: int = 0
+    def replacer(match: Match[str]) -> str:
+        nonlocal unnumbered_idx
+        if match.group(1) and match.group(2):
+            # [text]{n:label}
+            return answers.get(match.group(1), match.group(0))
+        elif match.group(3):
+            # [text]{label}
+            key = f"unnumbered_{unnumbered_idx}"
+            unnumbered_idx += 1
+            return answers.get(key, match.group(0))
+        elif match.group(4):
+            # [text]{n}
+            return answers.get(match.group(4), match.group(0))
+        return match.group(0)
+    pattern: re.Pattern[str] = re.compile(r"(?:\[[^\]]*\])?\{(\d+):([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{(\d+)\}")
+    return pattern.sub(replacer, story)
+
+
+def main():
+    """
+    Main function to run the Madlibs program.
+    Reads the story, prompts the user, and prints the completed story.
+    """
+    with open("sample_story.txt") as f:
+        story = f.read()
+    placeholders = get_placeholders_in_order(story)
+    answers = prompt_user(placeholders)
+    completed_story = fill_story(story, answers)
+    print("\nYour completed story:\n")
+    print(completed_story)
+
+
+if __name__ == "__main__":
+    main()
