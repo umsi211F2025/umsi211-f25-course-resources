@@ -5,6 +5,10 @@ from typing import List, Tuple, Dict, Union, Match
 
 # Extract all placeholders in order of appearance
 def get_placeholders_in_order(story: str) -> List[Union[Tuple[str, str, str], Tuple[str, str]]]:
+    """
+    Extract all placeholders in order of appearance from the story string.
+    Returns a list of tuples describing each placeholder.
+    """
     pattern: re.Pattern[str] = re.compile(r"(?:\[[^\]]*\])?\{(\d+):([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{([a-zA-Z_]+)\}|(?:\[[^\]]*\])?\{(\d+)\}")
     placeholders: List[Union[Tuple[str, str, str], Tuple[str, str]]] = []
     for match in pattern.finditer(story):
@@ -21,6 +25,9 @@ def get_placeholders_in_order(story: str) -> List[Union[Tuple[str, str, str], Tu
 
 
 def prompt_user(placeholders: List[Union[Tuple[str, str, str], Tuple[str, str]]]) -> Dict[str, str]:
+    """
+    Prompt the user for input for each placeholder and return a dictionary of answers.
+    """
     answers: Dict[str, str] = {}
     unnumbered_idx: int = 0
     for ph in placeholders:
@@ -41,7 +48,9 @@ def prompt_user(placeholders: List[Union[Tuple[str, str, str], Tuple[str, str]]]
 
 
 def fill_story(story: str, answers: Dict[str, str]) -> str:
-    # Replace placeholders with user answers
+    """
+    Replace placeholders in the story with the user's answers.
+    """
     unnumbered_idx: int = 0
     def replacer(match: Match[str]) -> str:
         nonlocal unnumbered_idx
@@ -61,8 +70,11 @@ def fill_story(story: str, answers: Dict[str, str]) -> str:
     return pattern.sub(replacer, story)
 
 
-if __name__ == "__main__":
-    # Read the story from file
+def main():
+    """
+    Main function to run the Madlibs program.
+    Reads the story, prompts the user, and prints the completed story.
+    """
     with open("sample_story.txt") as f:
         story = f.read()
     placeholders = get_placeholders_in_order(story)
@@ -70,3 +82,7 @@ if __name__ == "__main__":
     completed_story = fill_story(story, answers)
     print("\nYour completed story:\n")
     print(completed_story)
+
+
+if __name__ == "__main__":
+    main()

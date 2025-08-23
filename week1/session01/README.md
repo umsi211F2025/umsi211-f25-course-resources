@@ -12,12 +12,12 @@ Welcome to Session 01! Below is the outline for today’s session, with links to
 	(In-class activity)
 
 3. **Codespace Setup**  
-	Follow the instructions posted in Canvas.
+	Follow the instructions posted in Canvas under the assignment, "Get started with github classroom and codespaces."
 
 4. **Programs and Directories**
 	[mini-lecture](./programs.md)
 
-4. **Lab: Madlibs**  
+5. **Lab: Madlibs**  
 	[madlibs/](../madlibs/)
 
 ---

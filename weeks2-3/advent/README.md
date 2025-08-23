@@ -41,4 +41,7 @@ Other commands may be available depending on the current game state or your exte
 - Be sure to follow the existing format for rooms, etc.
 - After editing, restart the game to see your changes.
 
+## Changing the Game Mechanics (`advent.py`)
 
+- The game mechanics are defined in the `advent.py` file.
+- You can modify the game's behavior (e.g., to include new commands or item types) by changing the code in this file.

@@ -10,7 +10,7 @@ marp: true
 
 - A program is a set of instructions that a computer can execute.
 - Written in a restricted language, with a specific syntax and formal semantics (every program has a precise meaning).
-    - examples: python, 
+    - examples: python, jscript, markdown
 
 ---
 
