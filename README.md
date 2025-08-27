@@ -11,6 +11,7 @@ If you got this by accepting the ungraded assignment via github classroom, this 
 To get the latest course materials (do this regularly, at least once a week), use the appropriate sync script for your operating system:
 
 #### On macOS/Linux:
+In a terminal window, make sure your top-level directory of this repository is your working directory, then run:
 ```bash
 ./sync-updates.sh
 ```
