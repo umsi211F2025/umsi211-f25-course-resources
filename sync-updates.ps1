@@ -73,7 +73,7 @@ try {
     
     # For GitHub Classroom assignments, students get their own copies
     # The upstream should point to the original instructor repository
-    $UpstreamUrl = "https://github.com/umsi211-f25-course-resources.git"
+    $UpstreamUrl = "https://github.com/umsi211F2025/umsi211-f25-course-resources"
     
     Write-Status "Adding upstream remote: $UpstreamUrl"
     Write-Status "Note: This assumes the instructor repository is at the above URL."

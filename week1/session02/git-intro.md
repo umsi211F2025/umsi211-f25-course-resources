@@ -90,10 +90,12 @@ vscode, our IDE (Integrated Development Environment) has some visual tools for i
 - use `git log` to view your commit history
 - use `git push` to upload your changes to GitHub
 
+Not sure what to do? Ask CoPilot chat for assistance!
+
 ---
 
 ## Lab Exercise 2: Explore your repository on GitHub
-- on GitHub, navigate to your repository
+- on GitHub (the website), navigate to your repository
 - Click on the "Code" tab to view your files
 - Click on the "Commits" tab to view your commit history
     - You should see a list of all your commits, along with their messages and timestamps. Just like you saw with `git log`

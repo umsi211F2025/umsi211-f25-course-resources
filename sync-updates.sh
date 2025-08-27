@@ -63,7 +63,7 @@ else
     
     # For GitHub Classroom assignments, students get their own copies
     # The upstream should point to the original instructor repository
-    UPSTREAM_URL="https://github.com/umsi211-f25-course-resources.git"
+    UPSTREAM_URL="https://github.com/umsi211F2025/umsi211-f25-course-resources"
     
     print_status "Adding upstream remote: $UPSTREAM_URL"
     print_status "Note: This assumes the instructor repository is at the above URL."
@@ -110,8 +110,8 @@ else
     STASHED=false
 fi
 
-# Try to merge upstream changes
-if git merge upstream/main 2>/dev/null || git merge upstream/master 2>/dev/null; then
+ # Try to merge upstream changes
+if git merge upstream/main --no-edit 2>/dev/null || git merge upstream/master --no-edit 2>/dev/null; then
     print_success "Successfully merged upstream changes!"
     
     if [ "$STASHED" = true ]; then
