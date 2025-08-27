@@ -95,7 +95,7 @@ Not sure what to do? Ask CoPilot chat for assistance!
 ---
 
 ## Lab Exercise 2: Explore your repository on GitHub
-- on GitHub (the website), navigate to your repository
+- on GitHub (go to the website in a browser), navigate to your repository
 - Click on the "Code" tab to view your files
 - Click on the "Commits" tab to view your commit history
     - You should see a list of all your commits, along with their messages and timestamps. Just like you saw with `git log`
