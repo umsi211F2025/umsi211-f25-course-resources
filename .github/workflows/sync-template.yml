@@ -11,14 +11,6 @@ jobs:
     steps:
       - name: Checkout classroom repo
         uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-
-      - name: Set up git authentication
-        run: |
-          git config --global url."https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Git user
         run: |
