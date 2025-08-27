@@ -21,7 +21,7 @@ jobs:
 
       - name: Add template repo as upstream
         run: |
-          git remote add upstream https://github.com/umsi211-f25-course-resources.git
+          git remote add upstream https://github.com/umsi211F2025/umsi211-f25-course-resources
           git fetch upstream
 
       - name: Merge template changes
