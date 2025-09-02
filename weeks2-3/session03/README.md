@@ -3,6 +3,7 @@
 Welcome to session03! This session focuses on understanding functions in Python and learning how to write and use unit tests, using the ADVENT game as a running example.
 
 ## Contents
+- `admin.md`: Course administration stuff before we start on new material
 - `functions.md`: Slides introducing Python functions and exploring the structure of the ADVENT game code.
 - `../advent/advent.py`: The main game code.
 - `unit-tests.md`: Slides introducing unit testing, with examples and exercises for writing and running tests.
