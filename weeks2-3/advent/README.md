@@ -2,6 +2,13 @@
 
 This README provides instructions for running the starter `advent.py` game, editing the game map, and running tests.
 
+# IMPORTANT: EDIT THE VERSION IN THE PROBLEM SET
+
+This same code is duplicated in the ps1 repository. When we do lab exercises, you might as well do them in that repository, so that any fixes and improvements you make to the game will be available to you.
+
+It's not easy to merge changes from this repository into the problem set repository.
+
+
 ## How to Run the Game
 
 1. Open a terminal and navigate to the `weeks2-3/advent/` directory:
