@@ -12,6 +12,7 @@ Welcome to Session 04! In this session, we'll explore the concept of **data type
 
 1. **Mini-lecture:** Data Types and Type Annotations ([data-types-mini-lecture.md](./data-types-mini-lecture.md))
 2. **Mini-lecture:** Complex Data Types & Nested Structures ([complex-data-types-mini-lecture.md](./complex-data-types-mini-lecture.md))
+3. **Discussion:** What will a validator for Advent game.json do?
 3. **Lab Exercise:** Practice with Data Types in the Advent Game
     - Add an `items` key to `advent/game.json`, where each item has a name and a description.
         - Ask the AI assistant to help you think through whether items should be a list or a dictionary.
