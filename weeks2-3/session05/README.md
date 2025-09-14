@@ -10,5 +10,4 @@ In this session, we'll explore effective prompting strategies for using Copilot 
 
 ## Agenda
 - `prompting-strategies.md`
-- start working on PS1
-    - get started by downloading a new repository. See link in the Canvas assignment for Problem Set 1
+- Discussion: what will you implement in Advent?
