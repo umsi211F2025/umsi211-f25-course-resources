@@ -1,0 +1,9 @@
+userId,movieId,rating
+1,Movie1,4
+1,Movie2,5
+2,Movie1,3
+3,Movie2,2
+3,Movie3,5
+4,Movie1,5
+4,Movie2,4
+4,Movie3,3
