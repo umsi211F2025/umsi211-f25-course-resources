@@ -24,14 +24,21 @@ paginate: true
   - Open the file `poll_static.html` in your code editor.
   - Review the HTML structure and tags in the file.
 
-  **To view the page in a browser (from a GitHub Codespace):**
-  1. Right-click on `poll_static.html` in the file explorer and select "Preview" or "Open with Live Server" (if available).
-  2. Alternatively, use the Codespace browser preview feature:
-     - Click the "Ports" tab in Codespaces.
-     - If using Live Server, find the port and click "Open in Browser".
-     - If not using Live Server, you can use the built-in file preview.
-  3. The page will open in a browser tab, showing your poll as rendered HTML.
+---
+**Activity: Open the Page in a Browser**
+  1. In a terminal window, run a simple HTTP server that will serve the contents of the session08 folder.
+  ```
+  python3 -m http.server 8080 --directory "$(git rev-parse --show-toplevel)/week5/session08"
+  ```
 
+  This will start a server on port 8080.
+  
+  If you are are in a GitHub Codesspace, it will set up a port forwarding URL for you, something like, `https://bug-free-orbit-x5vrrrg5jq-8080.app.github.dev/`
+
+  If running vscode locally, you will want to use the URL `http://localhost:8080/`
+
+  2. Open that URL in a new browser tab. You should see a directory listing. 
+  3. Click on `poll_static.html` to open it in the browser.
 
 ---
 ## Key Features in the Example
