@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Poll Example</title>
+  <link rel="stylesheet" href="poll.css">
+</head>
+<body>
+  <div class="poll-container">
+    <section>
+      <h2>Which is your favorite fruit?</h2>
+      <ul>
+        <li><button>Apple</button></li>
+        <li><button>Banana</button></li>
+        <li><button>Cherry</button></li>
+        <li><button>Grape</button></li>
+        <li><button>Pomegranate</button></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Prediction</h2>
+      <form>
+        <label for="prediction">What percentage of other respondents do you think will choose the same fruit as you?</label><br>
+        <input type="number" id="prediction" name="prediction" min="0" max="100" step="1"> %
+      </form>
+    </section>
+  </div>
+</body>
+</html>
+
