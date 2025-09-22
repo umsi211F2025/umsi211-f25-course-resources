@@ -13,7 +13,7 @@ paginate: true
 
 ### Resources for Further Exploration
 - [MDN HTML Guide](https://developer.mozilla.org/en-US/docs/Web/HTML)
-
+ 
 ---
 ## Example: a Poll Page
 
