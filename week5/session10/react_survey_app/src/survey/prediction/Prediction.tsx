@@ -1,4 +1,5 @@
-// Presentational component for the prediction feature
+
+// Hybrid component for the prediction feature (container + presentational)
 import React from 'react';
 import './Prediction.css';
 

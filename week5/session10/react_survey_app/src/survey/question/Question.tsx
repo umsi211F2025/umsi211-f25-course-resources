@@ -1,16 +1,17 @@
-// Presentational component for the survey question
+
+// Hybrid component for the survey question feature (container + presentational)
 import React from 'react';
 import './Question.css';
+
 
 interface QuestionProps {
   selectedFruit: string | null;
   setSelectedFruit: (fruit: string) => void;
   fruitVotes: { [fruit: string]: number };
+  fruits: string[];
 }
 
-const fruits = ["Apple", "Banana", "Cherry", "Grape", "Pomegranate"];
-
-function Question({ selectedFruit, setSelectedFruit }: QuestionProps) {
+function Question({ selectedFruit, setSelectedFruit, fruitVotes, fruits }: QuestionProps) {
   return (
     <div className="question">
       <h2>Which is your favorite fruit?</h2>

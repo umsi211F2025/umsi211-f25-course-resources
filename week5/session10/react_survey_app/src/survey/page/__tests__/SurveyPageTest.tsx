@@ -1,15 +1,15 @@
 import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import SurveyPageContainer from '../SurveyPageContainer';
-describe('SurveyPageContainer', () => {
+import SurveyPage from '../SurveyPage';
+describe('SurveyPage', () => {
   test('Feedback section is hidden when no prediction has been made', () => {
-    render(<SurveyPageContainer />);
+  render(<SurveyPage />);
     expect(document.querySelector('.feedback')).not.toBeInTheDocument();
   });
 
   test('Feedback section is shown after prediction is made', async () => {
-    render(<SurveyPageContainer />);
+  render(<SurveyPage />);
     // Select a fruit first so the prediction input appears
     const fruitButton = screen.getByRole('button', { name: /apple/i });
     await act(async () => {
@@ -23,12 +23,12 @@ describe('SurveyPageContainer', () => {
   });
 
   test('Prediction section is hidden when page first loads', () => {
-    render(<SurveyPageContainer />);
+  render(<SurveyPage />);
     expect(document.querySelector('.prediction')).not.toBeInTheDocument();
   });
 
   test('Prediction section is shown after selecting a fruit', async () => {
-    render(<SurveyPageContainer />);
+  render(<SurveyPage />);
     // Click the first fruit button (apple)
     const fruitButton = screen.getByRole('button', { name: /apple/i });
     await act(async () => {
@@ -37,7 +37,7 @@ describe('SurveyPageContainer', () => {
     expect(document.querySelector('.prediction')).toBeInTheDocument();
   });
   test('Changing fruit after prediction resets prediction, updates label, and hides feedback', async () => {
-    render(<SurveyPageContainer />);
+  render(<SurveyPage />);
     // Select "Apple" and make a prediction
     const appleButton = screen.getByRole('button', { name: /apple/i });
     await act(async () => {
@@ -67,7 +67,7 @@ describe('SurveyPageContainer', () => {
   });
 
   test('After changing fruit and entering new prediction, feedback appears', async () => {
-    render(<SurveyPageContainer />);
+  render(<SurveyPage />);
     // Select "Apple" and make a prediction
     const appleButton = screen.getByRole('button', { name: /apple/i });
     await act(async () => {

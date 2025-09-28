@@ -1,42 +1,58 @@
-// SurveyPage: Composes the three main feature containers
-import React, { useState } from 'react';
 
-import QuestionContainer from '../question/QuestionContainer';
-import PredictionContainer from '../prediction/PredictionContainer';
-import FeedbackContainer from '../feedback/FeedbackContainer';
+// Hybrid SurveyPage: manages state and composes feature components
+import React, { useState } from 'react';
+import Question from '../question/Question';
+import Prediction from '../prediction/Prediction';
+import Feedback from '../feedback/Feedback';
 import './SurveyPage.css';
 
 
-interface SurveyPageProps {
-  selectedFruit: string | null;
-  setSelectedFruit: (fruit: string) => void;
-  fruitVotes: { [fruit: string]: number };
-  prediction: number | null;
-  onPredictionChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+function SurveyPage() {
+  const [selectedFruit, setSelectedFruitState] = useState<string | null>(null);
+  const [prediction, setPrediction] = useState<number | null>(null);
+  // Example vote counts
+  const fruitVotes: { [fruit: string]: number } = {
+    Apple: 12,
+    Banana: 18,
+    Cherry: 7,
+    Grape: 9,
+    Pomegranate: 4
+  };
+  const fruits = Object.keys(fruitVotes);
 
-function SurveyPage({ selectedFruit, setSelectedFruit, fruitVotes, prediction, onPredictionChange }: SurveyPageProps) {
+  // When fruit changes, set the fruit state and reset prediction state
+  const handleSetSelectedFruit = (fruit: string) => {
+    setSelectedFruitState(fruit);
+    setPrediction(null);
+  };
+
+  const handlePredictionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPrediction(value === '' ? null : Number(value));
+  };
+
   return (
     <div className="poll-container">
       <section>
-        <QuestionContainer
+        <Question
+          fruits={fruits}
           selectedFruit={selectedFruit}
-          setSelectedFruit={setSelectedFruit}
+          setSelectedFruit={handleSetSelectedFruit}
           fruitVotes={fruitVotes}
         />
       </section>
       {selectedFruit && (
         <section>
-          <PredictionContainer
+          <Prediction
             selectedFruit={selectedFruit}
             prediction={prediction}
-            onPredictionChange={onPredictionChange}
+            onPredictionChange={handlePredictionChange}
           />
         </section>
       )}
       {typeof prediction === 'number' ? (
         <section>
-          <FeedbackContainer
+          <Feedback
             fruitVotes={fruitVotes}
             selectedFruit={selectedFruit}
             prediction={prediction}
@@ -46,4 +62,5 @@ function SurveyPage({ selectedFruit, setSelectedFruit, fruitVotes, prediction, o
     </div>
   );
 }
+
 export default SurveyPage;
