@@ -36,25 +36,21 @@ function SurveyPage() {
       <section>
         <Question
           fruits={fruits}
-          selectedFruit={selectedFruit}
-          setSelectedFruit={handleSetSelectedFruit}
           fruitVotes={fruitVotes}
         />
       </section>
-      {selectedFruit && (
-        <section>
-          <Prediction
-            selectedFruit={selectedFruit}
-            prediction={prediction}
-            onPredictionChange={handlePredictionChange}
-          />
-        </section>
-      )}
+      <section>
+        <Prediction
+          selectedFruit={"Apple"}
+          prediction={prediction}
+          onPredictionChange={handlePredictionChange}
+        />
+      </section>
       {typeof prediction === 'number' ? (
         <section>
           <Feedback
             fruitVotes={fruitVotes}
-            selectedFruit={selectedFruit}
+            selectedFruit={"Apple"}
             prediction={prediction}
           />
         </section>

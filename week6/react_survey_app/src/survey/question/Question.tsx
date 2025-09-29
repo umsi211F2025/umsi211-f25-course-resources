@@ -4,14 +4,15 @@ import React from 'react';
 import './Question.css';
 
 
+
 interface QuestionProps {
-  selectedFruit: string | null;
-  setSelectedFruit: (fruit: string) => void;
   fruitVotes: { [fruit: string]: number };
   fruits: string[];
 }
 
-function Question({ selectedFruit, setSelectedFruit, fruitVotes, fruits }: QuestionProps) {
+
+function Question({ fruitVotes, fruits }: QuestionProps) {
+  const [selectedFruit, setSelectedFruit] = React.useState<string | null>(null);
   return (
     <div className="question">
       <h2>Which is your favorite fruit?</h2>
