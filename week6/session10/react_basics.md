@@ -196,6 +196,13 @@ const handleSetSelectedFruit = (fruit: string) => {
 
 ---
 
+## React Developer Tools Demo
+- Inspect component tree
+- View props and state as you interact
+- Edit state directly to see effects
+
+---
+
 ## Try It Yourself!
 
 - Explore the files in `src/survey/` to see how the app is built

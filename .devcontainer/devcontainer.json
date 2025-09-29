@@ -1,5 +1,10 @@
 {
   "name": "UMSI 211 Course Codespace",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -7,9 +12,11 @@
         "ms-python.vscode-pylance",
         "ms-toolsai.jupyter",
         "GitHub.copilot",
-        "mechatroner.rainbow-csv"
+        "mechatroner.rainbow-csv",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint"
       ]
     }
   },
-  "postCreateCommand": "pip install -r requirements.txt"
+  "postCreateCommand": "pip install -r requirements.txt && cd week5/session10/react_survey_app && npm install"
 }
