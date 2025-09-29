@@ -1,7 +1,7 @@
 #!/bin/zsh
 set -e
 
-find . -name "*.md" -print0 | xargs -0 -n 1 sh -c '
+find . -name "node_modules" -prune -o -name "*.md" -print0 | xargs -0 -n 1 sh -c '
   mdfile="$1"
   dir="$(dirname "$mdfile")"
   base="$(basename "$mdfile")"
