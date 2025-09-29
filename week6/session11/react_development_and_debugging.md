@@ -50,6 +50,19 @@ Similar things available in other browsers.
 - I'll show things in Chrome dev tools
 
 ---
+
+# Live Coding Example
+
+- I made a degraded version of our app with some bugs and missing features
+- We'll live code to fix them, following these practices
+
+If you want to follow along:
+- `git fetch upstream`
+- `git checkout -b upstream/week6-session11-react-debugging`
+- `npm run dev`
+ 
+
+---
 ## Debugging Styling
 
 - Look at the page to see if it "looks right"
@@ -57,22 +70,6 @@ Similar things available in other browsers.
   1. Check if the styles you expect are actually applied
   2. If not, debug style application
   3. If so, debug .css style contents
-
----
-
-## Debug Style Application
-
-- Common display issue is that style you think is applied is actually not.
-
-- Select an element in the Elements panel
-- Look at the Styles pane to see what styles are applied
-- If the style you expect is not there, create a test:
-    - Take a screenshot of styles panel and paste into CoPilot
-    - Explain what style you expected to be applied to that element
-    - Ask it to create an automated test to check that the style is applied
-- Then try to fix it
-    - Ask copilot to generate possible explanations for why the style is not applied
-    - Ask it to verify which of those explanations is correct, and only then try to fix
 
 
 
@@ -89,8 +86,22 @@ Similar things available in other browsers.
     - Ask copilot to stop making changes and explain what things it is trying and why
 
 ---
+## Debug Style Application
 
-## Debug Presence or Absence of Elements
+- Common display issue is that style you think is applied is actually not.
+- Select an element in the Elements panel
+- Look at the Styles panel to see what styles are applied
+- If the style you expect is not there, create a test:
+    - Take a screenshot of styles panel and paste into CoPilot
+    - Explain what style you expected to be applied to that element
+    - Ask it to create an automated test to check that the style is applied
+- Then try to fix it
+    - Ask copilot to generate possible explanations for why the style is not applied
+    - Ask it to verify which of those explanations is correct, and only then try to fix
+
+---
+
+## Debug Presence or Absence of DOM Elements
 
 - Check whether the DOM contains the right elements
 - If missing expected element, or have an extra:
