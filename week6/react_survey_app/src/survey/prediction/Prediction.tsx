@@ -1,12 +1,12 @@
 
 // Hybrid component for the prediction feature (container + presentational)
-import React from 'react';
+import type { ChangeEvent } from 'react';
 import './Prediction.css';
 
 interface PredictionProps {
   selectedFruit: string | null;
   prediction: number | null;
-  onPredictionChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onPredictionChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 function Prediction({ selectedFruit, prediction, onPredictionChange }: PredictionProps) {
