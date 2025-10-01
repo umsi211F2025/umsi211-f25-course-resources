@@ -1,6 +1,5 @@
-
 // Hybrid component for the survey question feature (container + presentational)
-import React from 'react';
+import { useState } from 'react';
 import './Question.css';
 
 
@@ -12,7 +11,7 @@ interface QuestionProps {
 
 
 function Question({ fruitVotes, fruits }: QuestionProps) {
-  const [selectedFruit, setSelectedFruit] = React.useState<string | null>(null);
+  const [selectedFruit, setSelectedFruit] = useState<string | null>(null);
   return (
     <div className="question">
       <h2>Which is your favorite fruit?</h2>

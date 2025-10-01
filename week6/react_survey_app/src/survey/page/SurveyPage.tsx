@@ -1,6 +1,6 @@
 
 // Hybrid SurveyPage: manages state and composes feature components
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Question from '../question/Question';
 import Prediction from '../prediction/Prediction';
 import Feedback from '../feedback/Feedback';

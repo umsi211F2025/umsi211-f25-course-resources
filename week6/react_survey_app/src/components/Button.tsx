@@ -1,9 +1,9 @@
 // Shared Button component
-import React from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import './Button.css';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
 }
 
 function Button({ children, ...props }: ButtonProps) {

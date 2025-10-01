@@ -6,6 +6,18 @@ This document records preferred approaches for structuring React projects in thi
 - We are using "type": "module" in package.json, so we use ES module syntax (`import`/`export`), not CommonJS (`require`/`module.exports`).
 - Use named imports/exports where possible, default exports only when there is a single main thing being exported.
 - Use absolute imports from `src/` where possible, relative imports only when necessary (e.g., importing a sibling component).
+- Use the new JSX transform (React 17+) that does not require `import React from 'react'` at the top of every file. To do this:
+  - In `tsconfig.json` or `jsconfig.json`, set `"jsx": "react-jsx"` in the `compilerOptions`.
+  - In Babel, use `@babel/preset-react` with the option `{ runtime: 'automatic' }`.
+- For React hooks and APIs, prefer named imports:
+  ```js
+  import { useState, useEffect } from 'react';
+  ```
+  - This avoids issues in testing environments where the default React import may not behave as expected.
+- For other imports, use default imports when the module exports a single thing, and named imports when it exports multiple things.
+
+
+
 
 ## Component Structure
 - We use functional components with hooks, not class components.

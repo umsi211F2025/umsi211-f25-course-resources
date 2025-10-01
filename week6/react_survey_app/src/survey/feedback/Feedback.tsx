@@ -1,6 +1,5 @@
 
 // Hybrid component for the feedback feature (container + presentational)
-import React from 'react';
 import './Feedback.css';
 
 interface FeedbackProps {
