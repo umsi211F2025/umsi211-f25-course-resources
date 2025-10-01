@@ -12,7 +12,7 @@ Follow these steps to get the app running in your Codespace:
 2. **Navigate to the App Directory**
    - In the terminal, change to the app directory:
      ```sh
-     cd course-resources/week5/session10/react_survey_app
+     cd week6/session10/react_survey_app
      ```
 
 3. **Install Dependencies**
