@@ -13,7 +13,7 @@ interface QuestionProps {
 function Question({ fruitVotes, fruits }: QuestionProps) {
   const [selectedFruit, setSelectedFruit] = useState<string | null>(null);
   return (
-    <div className="question">
+    <div className="question" data-testid="question">
       <h2>Which is your favorite fruit?</h2>
       <ul>
         {fruits.map(fruit => (
