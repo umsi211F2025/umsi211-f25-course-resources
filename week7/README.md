@@ -8,6 +8,8 @@ By the end of the week students should be able to:
 - Use localStorage for simple key/value persistence in React apps.
 - Run an SQL server from your codespace to handle persistent data storage.
   - Connect to it from a React frontend.
+- A new development approach:
+  - spec-based rather than test-based development. (Copilot isn't good enough at test-based development with React)
 
 
 ## This Week's File Map
