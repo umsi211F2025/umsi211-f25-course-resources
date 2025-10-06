@@ -1,7 +1,22 @@
 import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import SurveyPage from '../SurveyPage';
+
+const sampleQuestion = {
+  id: 1,
+  text: 'Which fruit do you like best?',
+  options: [
+    { id: 1, text: 'Apple' },
+    { id: 2, text: 'Banana' },
+    { id: 3, text: 'Cherry' },
+    { id: 4, text: 'Grape' },
+    { id: 5, text: 'Pomegranate' },
+  ],
+};
+const noop = () => {};
+const emptyCounts: { answer_id: number; count: number }[] = [];
 
 beforeEach(() => {
   window.localStorage.clear();
@@ -10,7 +25,7 @@ beforeEach(() => {
 
 describe('SurveyPage', () => {
   test('Prediction persists after submit and reload, but is cleared after changing fruit and reload', async () => {
-    const { unmount } = render(<SurveyPage />);
+  const { unmount } = render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     // Select "Grape"
     const grapeButton = screen.getByRole('button', { name: /grape/i });
     await act(async () => {
@@ -28,8 +43,8 @@ describe('SurveyPage', () => {
     // Feedback should be visible
     expect(document.querySelector('.feedback')).toBeTruthy();
     // Simulate reload by unmounting and remounting
-    unmount();
-    render(<SurveyPage />);
+  unmount();
+  render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     await waitFor(() => {
       expect(document.querySelector('.feedback')).toBeTruthy();
       const inputAfter = screen.getByLabelText(/what percentage/i) as HTMLInputElement;
@@ -42,8 +57,8 @@ describe('SurveyPage', () => {
       await userEvent.click(bananaButton);
     });
     // Simulate reload again
-    unmount();
-    render(<SurveyPage />);
+  unmount();
+  render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     await waitFor(() => {
       expect(document.querySelector('.feedback')).toBeNull();
       const inputAfterBanana = screen.getByLabelText(/what percentage/i) as HTMLInputElement;
@@ -52,7 +67,7 @@ describe('SurveyPage', () => {
   });
 
   test('Selected fruit persists but prediction does not if not submitted', async () => {
-    const { unmount } = render(<SurveyPage />);
+  const { unmount } = render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     // Select "Grape"
     const grapeButton = screen.getByRole('button', { name: /grape/i });
     await act(async () => {
@@ -64,8 +79,8 @@ describe('SurveyPage', () => {
       await userEvent.type(input, '25');
     });
     // Simulate reload by unmounting and remounting
-    unmount();
-    render(<SurveyPage />);
+  unmount();
+  render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     // Grape should still be selected
     await waitFor(() => {
       const grapeButtonAfter = screen.getByRole('button', { name: /grape/i });
@@ -76,7 +91,7 @@ describe('SurveyPage', () => {
     });
   });
   test('Feedback only appears after submitting prediction, not while typing', async () => {
-    render(<SurveyPage />);
+  render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     // Select a fruit so prediction input appears
     const fruitButton = screen.getByRole('button', { name: /apple/i });
     await act(async () => {
@@ -103,12 +118,12 @@ describe('SurveyPage', () => {
   });
 
   test('Feedback section is hidden when no prediction has been made', () => {
-  render(<SurveyPage />);
+  render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     expect(document.querySelector('.feedback')).toBeNull();
   });
 
   test('Feedback section is shown after prediction is made', async () => {
-    render(<SurveyPage />);
+  render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     // Select a fruit first so the prediction input appears
     const fruitButton = screen.getByRole('button', { name: /apple/i });
     await act(async () => {
@@ -129,12 +144,12 @@ describe('SurveyPage', () => {
   });
 
   test('Prediction section is hidden when page first loads', () => {
-  render(<SurveyPage />);
+  render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     expect(document.querySelector('.prediction')).toBeNull();
   });
 
   test('Prediction section is shown after selecting a fruit', async () => {
-  render(<SurveyPage />);
+  render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     // Click the first fruit button (apple)
     const fruitButton = screen.getByRole('button', { name: /apple/i });
     await act(async () => {
@@ -143,7 +158,7 @@ describe('SurveyPage', () => {
     expect(document.querySelector('.prediction')).toBeTruthy();
   });
   test('Changing fruit after prediction resets prediction, updates label, and hides feedback', async () => {
-    render(<SurveyPage />);
+  render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     // Select "Apple" and make a prediction
     const appleButton = screen.getByRole('button', { name: /apple/i });
     await act(async () => {
@@ -179,7 +194,7 @@ describe('SurveyPage', () => {
   });
 
   test('After changing fruit and entering new prediction, feedback appears', async () => {
-    render(<SurveyPage />);
+  render(<SurveyPage question={sampleQuestion} onAnswer={noop} answerCounts={emptyCounts} onNext={noop} isLast={false} />);
     // Select "Apple" and make a prediction
     const appleButton = screen.getByRole('button', { name: /apple/i });
     await act(async () => {

@@ -1,0 +1,20 @@
+.registration-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.username-input {
+  font-size: 1.2em;
+  padding: 0.5em;
+  width: 80%;
+}
+
+.button-container {
+  margin: 1em 0;
+}
+
+.start-button {
+  font-size: 1.1em;
+  padding: 0.5em 1.5em;
+}

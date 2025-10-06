@@ -49,4 +49,50 @@ Follow these steps to get the app running in your Codespace:
 If you get stuck, ask your copilot or your instructor!
 
 ---
+
+---
+
+# Full Stack/Backend Setup (Node.js + SQLite)
+
+This app now includes a backend server and database for survey questions and answers.
+
+## Backend Setup
+1. In the `react_survey_app` directory, install backend dependencies:
+   ```sh
+   npm install express sqlite3 body-parser
+   ```
+2. Initialize the SQLite database:
+   ```sh
+   node backend/init-db.js
+   ```
+3. Start the backend server:
+   ```sh
+   node backend/server.js
+   ```
+   The backend will run on port 4000 by default.
+
+## Frontend Setup
+1. In a new terminal, install frontend dependencies (if not already):
+   ```sh
+   npm install
+   ```
+2. Start the React development server:
+   ```sh
+   npm start
+   ```
+   The frontend will run on port 3000 by default.
+
+## API Endpoints
+- `GET /api/questions` – get all survey questions (with answer options)
+- `GET /api/answers?user_id=42` – get all answers for a user
+- `POST /api/answers` – add or update an answer (JSON body)
+- `GET /api/answer_counts?question_id=1` – get answer counts for a question
+
+## Codespaces Notes
+- All setup steps work in GitHub Codespaces.
+- If you encounter port or database issues, restart the Codespace and re-run the setup steps.
+
+See `backend/README.md` for more backend details.
+
+---
 Happy coding!
