@@ -226,6 +226,20 @@ But this is inflexible:
 
 ---
 
+## Wide vs. Long Format for Answers
+**Wide Format** (not recommended)
+| user_id | q1_answer | q2_answer |
+|---------|-----------|-----------|
+| 42      | 2         | "5"       | 
+
+**Long Format** (recommended)
+| id | user_id | question_id | answer_id | free_answer |
+|----|---------|-------------|-----------|-------------|
+| 1  | 42      | 1           | 2         | NULL        |
+| 2  | 42      | 2           | NULL      | "5"         |  
+
+---
+
 ## A Schema for Our Survey App
 
 
@@ -249,6 +263,8 @@ But this is inflexible:
 |----|---------|-------------|-----------|-------------|
 | 1  | 42      | 1           | 2         | NULL        |
 | 2  | 42      | 2           | NULL      | "5"         |
+
+
 
 ---
 
