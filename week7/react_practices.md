@@ -47,6 +47,11 @@ In modern React, it's common to have components that both manage state/logic and
 - A tests file should be placed in the same directory as the component it tests, in a `__tests__/` subdirectory. For example, `src/survey/page/__tests__/SurveyPage.test.tsx` tests `src/survey/page/SurveyPage.tsx`.
 - In tests, wrap user actions in `act(...)` calls. That will prevent warnings about multiple state updates not being wrapped in `act(...)`.
 
+## Specification-Driven Development
+- Maintain a `spec.md` file that describes the features and behavior of your app in sufficient detail that the copilot can implement them.
+- Before implementing a new feature, update the `spec.md` file to describe the desired behavior.
+- When the app doesn't behave as you'd like, update the `spec.md` file to clarify the intended behavior and point the copilot to the relevant section when asking it to fix the issue.
+
 ## Directory Example
 ```
 src/
