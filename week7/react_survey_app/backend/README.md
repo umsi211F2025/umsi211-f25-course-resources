@@ -8,7 +8,7 @@
    ```
 2. Initialize the database:
    ```sh
-   node backend/init-db.ccjs
+   node backend/init-db.cjs
    ```
 3. Start the backend server:
    ```sh
