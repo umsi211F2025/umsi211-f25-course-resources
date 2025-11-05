@@ -1,0 +1,45 @@
+/* Styles for the Question component */
+.question {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* poll.css styles for question area */
+.question h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+.question ul {
+  list-style: none;
+  padding: 0;
+}
+.question li {
+  margin: 10px 0;
+}
+.question button {
+  padding: 8px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  background: #4f8cff;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.question button:hover {
+  background: #357ae8;
+}
+
+/* Styles for selected button in Question component */
+.question button.selected {
+  background: #357ae8;
+  border: 3px solid #1a4fa0;
+  color: #fff;
+  box-shadow: 0 0 8px 2px #357ae8, 0 0 0 2px #b3d1ff;
+  transform: scale(1.07);
+  font-weight: bold;
+  z-index: 1;
+}
