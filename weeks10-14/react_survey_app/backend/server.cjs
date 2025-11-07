@@ -37,7 +37,7 @@ app.get('/api/questions', async (req, res) => {
     // Group options by question_id
     const questionsWithOptions = questions.map(question => ({
       ...question,
-      answer_options: allOptions.filter(opt => opt.question_id === question.id)
+      options: allOptions.filter(opt => opt.question_id === question.id)
     }));
 
     res.json(questionsWithOptions);

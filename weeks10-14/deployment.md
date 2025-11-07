@@ -175,7 +175,7 @@ To work around this, you will create a personal fork of your Classroom repositor
 When you make changes in your classroom repo (e.g., fixing bugs, adding features), you will push those to github. That updates the classroom repo. If you want to deploy those changes, you will need to sync those changes to your personal fork.
 - Go to your personal fork on GitHub.
 - You will see a message above the file list that says "This branch is X commits behind umsi211F2025:main" (or whatever the classroom repo's default branch is called).
-- Click on the `Sync fork` button.
+- Click on the `Sync fork` button, then `Update branch` to sync the changes from the classroom repo to your personal fork.
 
 ---
 
@@ -193,14 +193,15 @@ I recommend deploying the backend first, then the frontend. That's because the f
 
 0. Create an account on Render if you don't have one already.
 1. Go to [Render dashboard](https://dashboard.render.com/)
-2. Click "+ New Service" → "Web Service"
+2. Click "+ Create New Service" → "New Web Service"
 3. Connect your GitHub account if you haven't already
     - Allow access to your personal fork repository
-4. Back at render, select the repository to deploy
+4. Back at the Render website, select the repository to deploy
 5. Configure the web service:
    - **Name**: Choose a name (e.g., `presnick-211-survey-backend`)
    - **Language**: `Node`
    - **Branch**: `main`
+   - **Region**: Choose the region closest to your database (e.g., US East Virginia if that's where your Neon DB is-- check your DB URL to see the region)
    - **Root Directory**: the directory with your backend code (e.g., `weeks10-14/react_survey_app/backend`)
      - make sure this directory has a package.json file. If not, ask your copilot to help you create one. Don't forget to push it to github and then sync it to your personal fork before proceeding.
    - **Build Command**: `npm install`
@@ -209,7 +210,7 @@ I recommend deploying the backend first, then the frontend. That's because the f
    - **Environment Variables**: 
        - Key: `DATABASE_URL`
        - Value: Your production database connection string (e.g., from Neon)
-4. Click "Create Web Service"
+4. Click "Deploy Web Service"
 5. Wait for the deployment to complete
 6. Test the backend URL in your browser
     - visit a backend URL that should provide data (e.g., `https://presnick-211-survey-backend.onrender.com/api/answer_counts?question_id=1`) to see if the API is responding
