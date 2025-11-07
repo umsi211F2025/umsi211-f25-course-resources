@@ -1,13 +1,15 @@
 // Express backend for survey app
+require('dotenv').config();
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+const { Pool } = require('pg');
 const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-const dbPath = path.join(__dirname, 'survey.db');
-const db = new sqlite3.Database(dbPath);
+// Create PostgreSQL connection pool
+const pool = new Pool({ 
+  connectionString: process.env.DATABASE_URL 
+});
 
 app.use(bodyParser.json());
 app.use((req, res, next) => {
@@ -17,67 +19,108 @@ app.use((req, res, next) => {
   next();
 });
 
-// Get all survey questions (with answer options)
-app.get('/api/questions', (req, res) => {
-  db.all('SELECT * FROM questions', [], (err, questions) => {
-    if (err) return res.status(500).json({ error: err.message });
-    db.all('SELECT * FROM answer_options', [], (err2, options) => {
-      if (err2) return res.status(500).json({ error: err2.message });
-      // Attach options to questions
-      const questionsWithOptions = questions.map(q => ({
-        ...q,
-        options: options.filter(opt => opt.question_id === q.id)
-      }));
-      res.json(questionsWithOptions);
-    });
-  });
+// Get all questions with their answer options
+app.get('/api/questions', async (req, res) => {
+  try {
+    // Get all questions
+    const questionsResult = await pool.query(
+      'SELECT id, text FROM questions ORDER BY id'
+    );
+    const questions = questionsResult.rows;
+
+    // Get all answer options for these questions
+    const optionsResult = await pool.query(
+      'SELECT id, question_id, text FROM answer_options ORDER BY question_id, id'
+    );
+    const allOptions = optionsResult.rows;
+
+    // Group options by question_id
+    const questionsWithOptions = questions.map(question => ({
+      ...question,
+      answer_options: allOptions.filter(opt => opt.question_id === question.id)
+    }));
+
+    res.json(questionsWithOptions);
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    res.status(500).json({ error: 'Failed to fetch questions' });
+  }
 });
 
 // Get all answers for a user
-app.get('/api/answers', (req, res) => {
-  const userId = parseInt(req.query.user_id, 10);
-  if (!userId) return res.status(400).json({ error: 'user_id required' });
-  db.all('SELECT * FROM answers WHERE user_id = ?', [userId], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
+// Get all answers for a specific user
+app.get('/api/answers', async (req, res) => {
+  const userId = req.query.user_id;
+  if (!userId) {
+    return res.status(400).json({ error: 'user_id is required' });
+  }
+  
+  try {
+    const result = await pool.query(
+      'SELECT id, user_id, question_id, answer_id FROM answers WHERE user_id = $1',
+      [userId]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching answers:', error);
+    res.status(500).json({ error: 'Failed to fetch answers' });
+  }
 });
 
 // Add or update one answer
-app.post('/api/answers', (req, res) => {
-  const { user_id, question_id, answer_id, free_answer } = req.body;
-  if (!user_id || !question_id) {
-    return res.status(400).json({ error: 'user_id and question_id required' });
+// Upsert (update or insert) an answer for a user
+app.post('/api/answers', async (req, res) => {
+  const { user_id, question_id, answer_id } = req.body;
+  if (!user_id || !question_id || !answer_id) {
+    return res.status(400).json({ error: 'user_id, question_id, and answer_id are required' });
   }
-  // Check if answer exists
-  db.get('SELECT * FROM answers WHERE user_id = ? AND question_id = ?', [user_id, question_id], (err, row) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (row) {
-      // Update
-      db.run('UPDATE answers SET answer_id = ?, free_answer = ? WHERE id = ?', [answer_id, free_answer, row.id], function (err2) {
-        if (err2) return res.status(500).json({ error: err2.message });
-        res.json({ updated: true });
-      });
+
+  try {
+    // Check if answer already exists
+    const existingResult = await pool.query(
+      'SELECT id FROM answers WHERE user_id = $1 AND question_id = $2',
+      [user_id, question_id]
+    );
+
+    if (existingResult.rows.length > 0) {
+      // Update existing answer
+      await pool.query(
+        'UPDATE answers SET answer_id = $1 WHERE user_id = $2 AND question_id = $3',
+        [answer_id, user_id, question_id]
+      );
+      res.json({ message: 'Answer updated successfully' });
     } else {
-      // Insert
-      db.run('INSERT INTO answers (user_id, question_id, answer_id, free_answer) VALUES (?, ?, ?, ?)', [user_id, question_id, answer_id, free_answer], function (err2) {
-        if (err2) return res.status(500).json({ error: err2.message });
-        res.json({ inserted: true, id: this.lastID });
-      });
+      // Insert new answer
+      await pool.query(
+        'INSERT INTO answers (user_id, question_id, answer_id) VALUES ($1, $2, $3)',
+        [user_id, question_id, answer_id]
+      );
+      res.json({ message: 'Answer inserted successfully' });
     }
-  });
+  } catch (error) {
+    console.error('Error upserting answer:', error);
+    res.status(500).json({ error: 'Failed to upsert answer' });
+  }
 });
 
 // Get answer counts for a question
-app.get('/api/answer_counts', (req, res) => {
-  const questionId = parseInt(req.query.question_id, 10);
-  if (!questionId) return res.status(400).json({ error: 'question_id required' });
-  console.log('Getting answer counts for question:', questionId);
-  db.all('SELECT answer_id, COUNT(*) as count FROM answers WHERE question_id = ? AND answer_id IS NOT NULL GROUP BY answer_id', [questionId], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    console.log('Answer counts result:', rows);
-    res.json(rows);
-  });
+// Get answer counts for a question
+app.get('/api/answer_counts', async (req, res) => {
+  const questionId = req.query.question_id;
+  if (!questionId) {
+    return res.status(400).json({ error: 'question_id is required' });
+  }
+
+  try {
+    const result = await pool.query(
+      'SELECT answer_id, COUNT(*) as count FROM answers WHERE question_id = $1 GROUP BY answer_id',
+      [questionId]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching answer counts:', error);
+    res.status(500).json({ error: 'Failed to fetch answer counts' });
+  }
 });
 
 app.listen(PORT, () => {

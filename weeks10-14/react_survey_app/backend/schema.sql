@@ -1,25 +1,25 @@
--- SQLite schema for survey app
+-- Postgres schema for survey app
 
 CREATE TABLE IF NOT EXISTS questions (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id SERIAL PRIMARY KEY,
   text TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS answer_options (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id SERIAL PRIMARY KEY,
   question_id INTEGER NOT NULL,
   text TEXT NOT NULL,
   FOREIGN KEY (question_id) REFERENCES questions(id)
 );
 
 CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id SERIAL PRIMARY KEY,
   name TEXT,
   email TEXT
 );
 
 CREATE TABLE IF NOT EXISTS answers (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL,
   question_id INTEGER NOT NULL,
   answer_id INTEGER,
