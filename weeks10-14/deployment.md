@@ -149,9 +149,12 @@ To make sure it's getting data from the right database, you can try adding a new
 
 ## Create a Personal Fork for Deployment
 
-I had originally planned to have you automatically deploy from your classroom repository every time you pushed a commit to it. However, the free tiers may limit deployments from organization-owned private repos, or may limit the number of deployments you can do from such repos. Moreover, you do not have admin control over the access permissions for those organization-owned repos.
+I had originally planned to have you automatically deploy from your classroom repository every time you pushed a commit to it. But there are several reasons this may not be desirable:
+- Some deployment services (like Netlify and Vercel) have free tiers that may not support deploying from organization-owned private repositories.
+- You may want more control over the repository settings, access permissions, and integrations than what is allowed for organization-owned repositories.
+- You may want to push code to your classroom repo for safe keeping and grading, but not have every push trigger a deployment.
 
-To work around this, you will create a personal fork of your Classroom repository in your own GitHub account and have the service called render deploy your frontend and backend from that fork.
+To work around this, you will create a personal fork of your Classroom repository in your own GitHub account and have the service called Render auto-deploy your frontend and backend from that fork. You will decide when you want to sync changes from the classroom repo to your personal fork, triggering the auto-deploy.
 
 ### Concepts
 
@@ -171,7 +174,7 @@ To work around this, you will create a personal fork of your Classroom repositor
 - Done. You now have `https://github.com/<your-username>/<repo-name>`.
 
 
-### Updating Your Personal Fork
+### Updating Your Personal Fork (Triggering Deployments)
 When you make changes in your classroom repo (e.g., fixing bugs, adding features), you will push those to github. That updates the classroom repo. If you want to deploy those changes, you will need to sync those changes to your personal fork.
 - Go to your personal fork on GitHub.
 - You will see a message above the file list that says "This branch is X commits behind umsi211F2025:main" (or whatever the classroom repo's default branch is called).
