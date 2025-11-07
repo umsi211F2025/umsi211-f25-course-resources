@@ -20,11 +20,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS answers (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  user_id TEXT NOT NULL,
   question_id INTEGER NOT NULL,
   answer_id INTEGER,
   free_answer TEXT,
-  FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (question_id) REFERENCES questions(id),
   FOREIGN KEY (answer_id) REFERENCES answer_options(id)
 );
