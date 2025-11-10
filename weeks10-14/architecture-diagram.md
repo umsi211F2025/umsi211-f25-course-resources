@@ -10,10 +10,18 @@ flowchart TD
         F3["Build/Compile Process (npm run build for Vite frontend; tsc for backend)"]
         F1 --> F3
         F2 --> F3
-        F4["git commit & git push to GitHub"]
+        F4["git commit"]
         F3 --> F4
-        F4 --> AD["GitHub Auto-Deploy"]
     end
+
+    subgraph GH["GitHub Repositories"]
+        GH1["Classroom Repo (umsi211F2025/...)"]
+        GH2["Personal Fork (student/...)"]
+        GH1 --> |"Sync fork when ready to deploy new version"| GH2
+    end
+
+    F4 --> |"git push"| GH1
+    GH2 --> AD["GitHub Auto-Deploy"]
 
     AD --> B["1. Frontend (Vercel/Netlify)"]
     AD --> C["2. Backend API (Render/Railway)"]
