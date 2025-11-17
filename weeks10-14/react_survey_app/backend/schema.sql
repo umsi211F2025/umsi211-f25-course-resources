@@ -14,16 +14,20 @@ CREATE TABLE IF NOT EXISTS answer_options (
 
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
   name TEXT,
-  email TEXT
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS answers (
   id SERIAL PRIMARY KEY,
-  user_id TEXT NOT NULL,
+  user_id INTEGER NOT NULL,
   question_id INTEGER NOT NULL,
   answer_id INTEGER,
   free_answer TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (question_id) REFERENCES questions(id),
   FOREIGN KEY (answer_id) REFERENCES answer_options(id)
 );

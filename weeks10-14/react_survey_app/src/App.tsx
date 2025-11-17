@@ -24,9 +24,9 @@
  */
 
 import React, { useEffect, useState } from 'react';
-
+import { useAuth } from './AuthContext';
+import LoginForm from './LoginForm';
 import { getQuestions, getAnswers, addOrUpdateAnswer, getAnswerCounts } from 'src/api';
-import RegistrationPage from 'src/pages/RegistrationPage';
 import SurveyPage from 'src/pages/SurveyPage';
 import SummaryPage from 'src/pages/SummaryPage';
 import './App.css';
@@ -47,7 +47,6 @@ interface AnswerCount {
 }
 
 
-const USER_KEY = 'survey_user';
 const COMPLETED_KEY = 'survey_completed_questions';
 
 
@@ -64,28 +63,14 @@ function setCompletedQuestions(ids: number[]) {
 }
 
 function App() {
-  const [user, setUser] = useState<{ id: number; name: string } | null>(null);
+  // Auth comes from JWT auth context
+  const { user, token, logout } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answerCounts, setAnswerCounts] = useState<Record<number, AnswerCount[]>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Load user from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem(USER_KEY);
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-        setLoading(false);
-      } catch {
-        setLoading(false);
-      }
-    } else {
-      setLoading(false);
-    }
-  }, []);
 
   // Load all answer counts on initial load or page reload
   useEffect(() => {
@@ -114,40 +99,26 @@ function App() {
 
   // Load user answers when user is set
   useEffect(() => {
-    if (!user) return;
-    getAnswers(String(user.id)).then((as: Answer[]) => {
+    // Load answers only when authenticated
+    if (!user || !token) return;
+    getAnswers().then((as: Answer[]) => {
       setAnswers(as);
-      // Resume at first not explicitly completed question
       const completed = getCompletedQuestions();
       const idx = questions.findIndex((q: Question) => !completed.includes(q.id));
       setCurrentIdx(idx === -1 ? questions.length : idx);
-    }).catch((e: Error) => {
-      setError(e.message);
-    });
-  }, [user, questions]);
+    }).catch((e: Error) => setError(e.message));
+  }, [user, token, questions]);
 
 
-  // Registration handler
-  const handleRegister = async (username: string) => {
-    // Register user in backend (or just use name for now)
-    // For demo, just use a random id
-    const id = Math.floor(Math.random() * 1000000);
-    const userObj = { id, name: username };
-    localStorage.setItem(USER_KEY, JSON.stringify(userObj));
-    setUser(userObj);
-  };
-
-  // Answer handler
+  // Answer handler (uses authenticated user implicitly via JWT on backend)
   const handleAnswer = async (questionId: number, answerId: number | null, freeAnswer: string | null) => {
-    if (!user) return;
+    if (!user || !token) return;
     await addOrUpdateAnswer({
-      user_id: String(user.id),
       question_id: questionId,
       answer_id: answerId ?? 0,
       free_answer: freeAnswer
     });
-    // Refresh answers only
-    const as = await getAnswers(String(user.id));
+    const as = await getAnswers();
     setAnswers(as);
     // Do NOT advance question here; wait for Next button
   };
@@ -179,28 +150,44 @@ function App() {
   if (loading) return <div style={{ textAlign: 'center', marginTop: '2em' }}>Loading...</div>;
   if (error) return <div style={{ color: 'red' }}>{error}</div>;
   // Show reset button at all times for debugging
-  if (!user) return <>
-    <button className="reset-button" onClick={() => {
-      localStorage.removeItem(COMPLETED_KEY);
-      handleResetAll();
-    }}>Reset All Local State</button>
-    <RegistrationPage onRegister={handleRegister} />
-  </>;
+  if (!user) return (
+    <>
+      <div className="top-bar">
+        <button className="reset-button" onClick={() => {
+          localStorage.removeItem(COMPLETED_KEY);
+          handleResetAll();
+        }}>Reset Local State</button>
+      </div>
+      <LoginForm />
+    </>
+  );
   if (!questions.length) return <>
-    <button className="reset-button" onClick={() => {
-      localStorage.removeItem(COMPLETED_KEY);
-      handleResetAll();
-    }}>Reset All Local State</button>
+    <div className="top-bar">
+      <button className="reset-button" onClick={() => {
+        localStorage.removeItem(COMPLETED_KEY);
+        handleResetAll();
+      }}>Reset Local State</button>
+      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>{user?.email}</span>
+        <button onClick={logout} className="navigation-button">Logout</button>
+      </div>
+    </div>
     <div>No survey questions found.</div>
   </>;
 
   // If all questions answered, show summary
   if (currentIdx >= questions.length) {
     return <>
-      <button className="reset-button" onClick={() => {
-        localStorage.removeItem(COMPLETED_KEY);
-        handleResetAll();
-      }}>Reset All Local State</button>
+      <div className="top-bar">
+        <button className="reset-button" onClick={() => {
+          localStorage.removeItem(COMPLETED_KEY);
+          handleResetAll();
+        }}>Reset Local State</button>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>{user?.email}</span>
+          <button onClick={logout} className="navigation-button">Logout</button>
+        </div>
+      </div>
       <div className="summary-navigation">
         <div className="summary-navigation-buttons">
           <button onClick={handlePrevQuestion} className="navigation-button">
@@ -220,10 +207,16 @@ function App() {
 
   return (
     <>
-      <button className="reset-button" onClick={() => {
-        localStorage.removeItem(COMPLETED_KEY);
-        handleResetAll();
-      }}>Reset All Local State</button>
+      <div className="top-bar">
+        <button className="reset-button" onClick={() => {
+          localStorage.removeItem(COMPLETED_KEY);
+          handleResetAll();
+        }}>Reset Local State</button>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>{user?.email}</span>
+          <button onClick={logout} className="navigation-button">Logout</button>
+        </div>
+      </div>
       <div className="navigation-container">
         <div className="navigation-buttons">
           {currentIdx > 0 ? (
