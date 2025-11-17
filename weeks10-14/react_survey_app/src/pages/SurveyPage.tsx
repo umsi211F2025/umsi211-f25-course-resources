@@ -118,7 +118,9 @@ function SurveyPage({ question, userAnswer, onAnswer, answerCounts }: SurveyPage
   // Map answerCounts to fruitVotes using question.options
   const fruitVotes: { [fruit: string]: number } = {};
   question.options.forEach((opt) => {
-    const count = answerCounts.find((c) => c.answer_id === opt.id)?.count ?? 0;
+    const countData = answerCounts.find((c) => c.answer_id === opt.id);
+    // PostgreSQL COUNT returns bigint which gets serialized as string, so parse it
+    const count = countData ? parseInt(String(countData.count), 10) : 0;
     fruitVotes[opt.text] = count;
   });
   const fruits = question.options.map((opt) => opt.text);

@@ -22,19 +22,36 @@ export async function getQuestions(): Promise<Question[]> {
 	return res.json();
 }
 
-export async function getAnswers(userId: string): Promise<Answer[]> {
-	const res = await fetch(`${API_URL}/answers?user_id=${userId}`);
-	if (!res.ok) throw new Error('Failed to fetch answers');
+export async function getAnswers(token: string): Promise<Answer[]> {
+	const res = await fetch(`${API_URL}/answers`, {
+		headers: {
+			'Authorization': `Bearer ${token}`
+		}
+	});
+	if (!res.ok) {
+		if (res.status === 401) {
+			throw new Error('Unauthorized - please sign in');
+		}
+		throw new Error('Failed to fetch answers');
+	}
 	return res.json();
 }
 
-export async function addOrUpdateAnswer(args: { user_id: string; question_id: number; answer_id: number; free_answer: string | null }): Promise<any> {
+export async function addOrUpdateAnswer(args: { question_id: number; answer_id: number; free_answer: string | null }, token: string): Promise<any> {
 	const res = await fetch(`${API_URL}/answers`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers: { 
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${token}`
+		},
 		body: JSON.stringify(args)
 	});
-	if (!res.ok) throw new Error('Failed to submit answer');
+	if (!res.ok) {
+		if (res.status === 401) {
+			throw new Error('Unauthorized - please sign in');
+		}
+		throw new Error('Failed to submit answer');
+	}
 	return res.json();
 }
 

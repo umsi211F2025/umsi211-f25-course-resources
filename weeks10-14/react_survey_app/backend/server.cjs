@@ -2,6 +2,7 @@
 require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
+const { ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node');
 const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -47,13 +48,9 @@ app.get('/api/questions', async (req, res) => {
   }
 });
 
-// Get all answers for a user
-// Get all answers for a specific user
-app.get('/api/answers', async (req, res) => {
-  const userId = req.query.user_id;
-  if (!userId) {
-    return res.status(400).json({ error: 'user_id is required' });
-  }
+// Protected route: Get all answers for the authenticated user
+app.get('/api/answers', ClerkExpressRequireAuth(), async (req, res) => {
+  const userId = req.auth.userId; // Get user ID from Clerk auth
   
   try {
     const result = await pool.query(
@@ -67,33 +64,34 @@ app.get('/api/answers', async (req, res) => {
   }
 });
 
-// Add or update one answer
-// Upsert (update or insert) an answer for a user
-app.post('/api/answers', async (req, res) => {
-  const { user_id, question_id, answer_id } = req.body;
-  if (!user_id || !question_id || !answer_id) {
-    return res.status(400).json({ error: 'user_id, question_id, and answer_id are required' });
+// Protected route: Add or update an answer for the authenticated user
+app.post('/api/answers', ClerkExpressRequireAuth(), async (req, res) => {
+  const userId = req.auth.userId; // Get user ID from Clerk auth
+  const { question_id, answer_id } = req.body;
+  
+  if (!question_id || !answer_id) {
+    return res.status(400).json({ error: 'question_id and answer_id are required' });
   }
 
   try {
     // Check if answer already exists
     const existingResult = await pool.query(
       'SELECT id FROM answers WHERE user_id = $1 AND question_id = $2',
-      [user_id, question_id]
+      [userId, question_id]
     );
 
     if (existingResult.rows.length > 0) {
       // Update existing answer
       await pool.query(
         'UPDATE answers SET answer_id = $1 WHERE user_id = $2 AND question_id = $3',
-        [answer_id, user_id, question_id]
+        [answer_id, userId, question_id]
       );
       res.json({ message: 'Answer updated successfully' });
     } else {
       // Insert new answer
       await pool.query(
         'INSERT INTO answers (user_id, question_id, answer_id) VALUES ($1, $2, $3)',
-        [user_id, question_id, answer_id]
+        [userId, question_id, answer_id]
       );
       res.json({ message: 'Answer inserted successfully' });
     }

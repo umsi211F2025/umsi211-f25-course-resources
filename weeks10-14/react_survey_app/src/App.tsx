@@ -24,9 +24,16 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+  useAuth,
+} from '@clerk/clerk-react';
 
 import { getQuestions, getAnswers, addOrUpdateAnswer, getAnswerCounts } from 'src/api';
-import RegistrationPage from 'src/pages/RegistrationPage';
 import SurveyPage from 'src/pages/SurveyPage';
 import SummaryPage from 'src/pages/SummaryPage';
 import './App.css';
@@ -46,8 +53,6 @@ interface AnswerCount {
   count: number;
 }
 
-
-const USER_KEY = 'survey_user';
 const COMPLETED_KEY = 'survey_completed_questions';
 
 
@@ -64,92 +69,130 @@ function setCompletedQuestions(ids: number[]) {
 }
 
 function App() {
-  const [user, setUser] = useState<{ id: number; name: string } | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load questions and answer counts on mount
+  useEffect(() => {
+    setLoading(true);
+    getQuestions().then((qs: Question[]) => {
+      setQuestions(qs);
+      setLoading(false);
+    }).catch((e: Error) => {
+      setError(e.message);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return <div style={{ textAlign: 'center', marginTop: '2em' }}>Loading...</div>;
+  if (error) return <div style={{ color: 'red' }}>{error}</div>;
+
+  return (
+    <div>
+      <header style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', alignItems: 'center' }}>
+        <h1>Survey App</h1>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <SignedOut>
+            <SignInButton mode="modal" />
+            <SignUpButton mode="modal" />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
+      </header>
+
+      <main>
+        <SignedOut>
+          <p style={{ textAlign: 'center', marginTop: '2rem' }}>
+            Please sign in to take the survey
+          </p>
+        </SignedOut>
+        <SignedIn>
+          <SurveyContent questions={questions} />
+        </SignedIn>
+      </main>
+    </div>
+  );
+}
+
+interface SurveyContentProps {
+  questions: Question[];
+}
+
+function SurveyContent({ questions }: SurveyContentProps) {
+  const { getToken } = useAuth();
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answerCounts, setAnswerCounts] = useState<Record<number, AnswerCount[]>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load user from localStorage
+  // Load user answers and answer counts when component mounts
   useEffect(() => {
-    const stored = localStorage.getItem(USER_KEY);
-    if (stored) {
+    if (!questions.length) return;
+    
+    const loadData = async () => {
       try {
-        setUser(JSON.parse(stored));
-        setLoading(false);
-      } catch {
-        setLoading(false);
-      }
-    } else {
-      setLoading(false);
-    }
-  }, []);
+        const token = await getToken();
+        if (!token) {
+          setLoading(false);
+          return;
+        }
 
-  // Load all answer counts on initial load or page reload
-  useEffect(() => {
-    setLoading(true);
-    getQuestions().then((qs: Question[]) => {
-      setQuestions(qs);
-      
-      // Load answer counts for all questions
-      const countPromises = qs.map((q: Question) => 
-        getAnswerCounts(q.id).then((counts: AnswerCount[]) => ({ questionId: q.id, counts }))
-      );
-      
-      Promise.all(countPromises).then((allCounts) => {
+        // Load user's answers
+        const userAnswers = await getAnswers(token);
+        setAnswers(userAnswers);
+
+        // Load answer counts for all questions
+        const countPromises = questions.map((q: Question) => 
+          getAnswerCounts(q.id).then((counts: AnswerCount[]) => ({ questionId: q.id, counts }))
+        );
+        
+        const allCounts = await Promise.all(countPromises);
         const countMap: Record<number, AnswerCount[]> = {};
         allCounts.forEach(({ questionId, counts }) => {
           countMap[questionId] = counts;
         });
         setAnswerCounts(countMap);
+
+        // Resume at first not explicitly completed question
+        const completed = getCompletedQuestions();
+        const idx = questions.findIndex((q: Question) => !completed.includes(q.id));
+        setCurrentIdx(idx === -1 ? questions.length : idx);
+        
         setLoading(false);
-      });
-    }).catch((e: Error) => {
-      setError(e.message);
-      setLoading(false);
-    });
-  }, []); // Run once on mount (initial load or page reload)
+      } catch (e: any) {
+        setError(e.message);
+        setLoading(false);
+      }
+    };
 
-  // Load user answers when user is set
-  useEffect(() => {
-    if (!user) return;
-    getAnswers(String(user.id)).then((as: Answer[]) => {
-      setAnswers(as);
-      // Resume at first not explicitly completed question
-      const completed = getCompletedQuestions();
-      const idx = questions.findIndex((q: Question) => !completed.includes(q.id));
-      setCurrentIdx(idx === -1 ? questions.length : idx);
-    }).catch((e: Error) => {
-      setError(e.message);
-    });
-  }, [user, questions]);
-
-
-  // Registration handler
-  const handleRegister = async (username: string) => {
-    // Register user in backend (or just use name for now)
-    // For demo, just use a random id
-    const id = Math.floor(Math.random() * 1000000);
-    const userObj = { id, name: username };
-    localStorage.setItem(USER_KEY, JSON.stringify(userObj));
-    setUser(userObj);
-  };
+    loadData();
+  }, [questions, getToken]);
 
   // Answer handler
   const handleAnswer = async (questionId: number, answerId: number | null, freeAnswer: string | null) => {
-    if (!user) return;
-    await addOrUpdateAnswer({
-      user_id: String(user.id),
-      question_id: questionId,
-      answer_id: answerId ?? 0,
-      free_answer: freeAnswer
-    });
-    // Refresh answers only
-    const as = await getAnswers(String(user.id));
-    setAnswers(as);
-    // Do NOT advance question here; wait for Next button
+    try {
+      const token = await getToken();
+      if (!token) {
+        setError('Not authenticated');
+        return;
+      }
+
+      await addOrUpdateAnswer({
+        question_id: questionId,
+        answer_id: answerId ?? 0,
+        free_answer: freeAnswer
+      }, token);
+
+      // Refresh answers only
+      const as = await getAnswers(token);
+      setAnswers(as);
+    } catch (e: any) {
+      setError(e.message);
+    }
   };
 
   const handleNextQuestion = () => {
@@ -176,16 +219,16 @@ function App() {
     }
   };
 
+  const handleResetAll = () => {
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith('survey_'))
+      .forEach((k) => localStorage.removeItem(k));
+    window.location.reload();
+  };
+
   if (loading) return <div style={{ textAlign: 'center', marginTop: '2em' }}>Loading...</div>;
   if (error) return <div style={{ color: 'red' }}>{error}</div>;
-  // Show reset button at all times for debugging
-  if (!user) return <>
-    <button className="reset-button" onClick={() => {
-      localStorage.removeItem(COMPLETED_KEY);
-      handleResetAll();
-    }}>Reset All Local State</button>
-    <RegistrationPage onRegister={handleRegister} />
-  </>;
+
   if (!questions.length) return <>
     <button className="reset-button" onClick={() => {
       localStorage.removeItem(COMPLETED_KEY);

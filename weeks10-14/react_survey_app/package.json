@@ -12,6 +12,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.55.0",
     "body-parser": "^2.2.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",

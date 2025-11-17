@@ -19,12 +19,6 @@ INSERT INTO answer_options (question_id, text) VALUES
   (3, 'Yes'),
   (3, 'No');
 
--- Optionally, add a demo user
-INSERT INTO users (name, email) VALUES
-  ('Demo User', 'demo@example.com');
-
--- Optionally, add some answers
--- Note: Using 1 as user_id since the demo user will be auto-assigned id=1
-INSERT INTO answers (user_id, question_id, answer_id, free_answer) VALUES
-  (1, 1, 2, NULL),
-  (1, 2, NULL, '5');
+-- Note: With Clerk authentication, user data is managed by Clerk
+-- The answers table uses Clerk user IDs (TEXT format like 'user_2abc123...')
+-- No need to seed demo users or answers - users will authenticate through Clerk
